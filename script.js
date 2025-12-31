@@ -4,6 +4,7 @@ const resetBtn = document.getElementById('reset-btn');
 const carCarrier = document.getElementById('car-carrier');
 const tankTruck = document.getElementById('tank-truck');
 const sportCar = document.getElementById('sport-car');
+const train = document.getElementById('train');
 const soundCaption = document.getElementById('sound-caption');
 const crashEffect = document.getElementById('crash-effect');
 
@@ -26,9 +27,12 @@ const TIMING = {
     SPORT_CAR_SCREECH: 2800,
     SPORT_CAR_MOVEMENT: 3000,
     SECOND_CRASH: 4500,
-    THIRD_SOUND: 5200,
-    FINAL_CRASH: 5800,
-    SEQUENCE_END: 7000
+    TRAIN_HORN: 5000,
+    TRAIN_MOVEMENT: 5200,
+    TRAIN_CRASH: 6500,
+    THIRD_SOUND: 7200,
+    FINAL_CRASH: 7800,
+    SEQUENCE_END: 9000
 };
 
 let isAnimating = false;
@@ -92,16 +96,17 @@ function createSmoke(x, y) {
 }
 
 // Function to damage vehicle
-function damageVehicle(vehicle) {
-    const icon = vehicle.querySelector('.vehicle-icon');
-    const damaged = vehicle.querySelector('.vehicle-damaged');
+function damageVehicle(vehicle, severity = 'medium') {
+    vehicle.classList.add('damaged');
     
-    if (icon && damaged) {
-        icon.style.display = 'none';
-        damaged.style.display = 'inline';
+    const cracks = vehicle.querySelectorAll('.crack');
+    cracks.forEach(crack => crack.style.display = 'block');
+    
+    if (severity === 'heavy') {
+        vehicle.classList.add('heavily-damaged');
+    } else if (severity === 'severe') {
+        vehicle.classList.add('severely-damaged');
     }
-    
-    vehicle.classList.add('damaged', 'squished');
 }
 
 // Function to get random sound effect
@@ -158,11 +163,37 @@ function startCrashSequence() {
         tankTruck.classList.add('shake');
         
         // Damage sport car and create more effects
-        damageVehicle(sportCar);
+        damageVehicle(sportCar, 'medium');
         sportCar.classList.add('crushed');
         createDebris(47, 40);
         createSmoke(47, 40);
     }, TIMING.SECOND_CRASH));
+    
+    // Train warning
+    activeTimeouts.push(setTimeout(() => {
+        showSoundCaption('CHOO CHOO!');
+    }, TIMING.TRAIN_HORN));
+    
+    // Train enters
+    activeTimeouts.push(setTimeout(() => {
+        train.classList.add('train-incoming');
+    }, TIMING.TRAIN_MOVEMENT));
+    
+    // Sport car crashes into train
+    activeTimeouts.push(setTimeout(() => {
+        showSoundCaption('MEGA ' + getRandomSound());
+        showCrashEffect();
+        sportCar.classList.add('shake', 'train-impact');
+        train.classList.add('shake');
+        
+        // Severe damage to sport car
+        damageVehicle(sportCar, 'severe');
+        damageVehicle(train, 'medium');
+        sportCar.classList.add('flattened', 'demolished');
+        createDebris(70, 50);
+        createDebris(65, 45);
+        createSmoke(70, 45);
+    }, TIMING.TRAIN_CRASH));
     
     // Final impact sounds
     activeTimeouts.push(setTimeout(() => {
@@ -196,20 +227,17 @@ function resetAnimation() {
     activeTimeouts = [];
     
     // Remove all animation classes
-    carCarrier.classList.remove('crash-left', 'shake', 'damaged', 'squished', 'tilted', 'broken');
-    tankTruck.classList.remove('crash-right', 'shake', 'damaged', 'squished', 'tilted', 'broken');
-    sportCar.classList.remove('crash-down', 'shake', 'damaged', 'squished', 'crushed', 'flattened');
+    carCarrier.classList.remove('crash-left', 'shake', 'damaged', 'squished', 'tilted', 'broken', 'heavily-damaged', 'severely-damaged');
+    tankTruck.classList.remove('crash-right', 'shake', 'damaged', 'squished', 'tilted', 'broken', 'heavily-damaged', 'severely-damaged');
+    sportCar.classList.remove('crash-down', 'shake', 'damaged', 'squished', 'crushed', 'flattened', 'train-impact', 'demolished', 'heavily-damaged', 'severely-damaged');
+    train.classList.remove('train-incoming', 'shake', 'damaged', 'heavily-damaged', 'severely-damaged');
     soundCaption.classList.remove('show');
     crashEffect.classList.remove('show');
     
-    // Reset vehicle icons
-    [carCarrier, tankTruck, sportCar].forEach(vehicle => {
-        const icon = vehicle.querySelector('.vehicle-icon');
-        const damaged = vehicle.querySelector('.vehicle-damaged');
-        if (icon && damaged) {
-            icon.style.display = 'inline';
-            damaged.style.display = 'none';
-        }
+    // Reset cracks
+    [carCarrier, tankTruck, sportCar, train].forEach(vehicle => {
+        const cracks = vehicle.querySelectorAll('.crack');
+        cracks.forEach(crack => crack.style.display = 'none');
     });
     
     // Clear debris and smoke

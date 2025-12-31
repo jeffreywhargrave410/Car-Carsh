@@ -18,7 +18,21 @@ const soundEffects = [
     'POW!'
 ];
 
+// Timing constants for crash sequence (in milliseconds)
+const TIMING = {
+    INITIAL_VROOM: 100,
+    START_MOVEMENT: 500,
+    FIRST_CRASH: 2000,
+    SPORT_CAR_SCREECH: 2800,
+    SPORT_CAR_MOVEMENT: 3000,
+    SECOND_CRASH: 4500,
+    THIRD_SOUND: 5200,
+    FINAL_CRASH: 5800,
+    SEQUENCE_END: 7000
+};
+
 let isAnimating = false;
+let activeTimeouts = [];
 
 // Function to show sound caption
 function showSoundCaption(sound) {
@@ -53,60 +67,65 @@ function startCrashSequence() {
     startBtn.disabled = true;
     
     // Phase 1: Car carrier and tank truck crash into each other
-    setTimeout(() => {
+    activeTimeouts.push(setTimeout(() => {
         showSoundCaption('VROOM!');
-    }, 100);
+    }, TIMING.INITIAL_VROOM));
     
-    setTimeout(() => {
+    activeTimeouts.push(setTimeout(() => {
         carCarrier.classList.add('crash-left');
         tankTruck.classList.add('crash-right');
-    }, 500);
+    }, TIMING.START_MOVEMENT));
     
     // First crash sound
-    setTimeout(() => {
+    activeTimeouts.push(setTimeout(() => {
         showSoundCaption(getRandomSound());
         showCrashEffect();
         carCarrier.classList.add('shake');
         tankTruck.classList.add('shake');
-    }, 2000);
+    }, TIMING.FIRST_CRASH));
     
     // Phase 2: Sport car joins the crash
-    setTimeout(() => {
+    activeTimeouts.push(setTimeout(() => {
         showSoundCaption('SCREECH!');
-    }, 2800);
+    }, TIMING.SPORT_CAR_SCREECH));
     
-    setTimeout(() => {
+    activeTimeouts.push(setTimeout(() => {
         sportCar.classList.add('crash-down');
-    }, 3000);
+    }, TIMING.SPORT_CAR_MOVEMENT));
     
     // Second crash sound
-    setTimeout(() => {
+    activeTimeouts.push(setTimeout(() => {
         showSoundCaption(getRandomSound());
         showCrashEffect();
         sportCar.classList.add('shake');
         carCarrier.classList.add('shake');
         tankTruck.classList.add('shake');
-    }, 4500);
+    }, TIMING.SECOND_CRASH));
     
     // Final impact sounds
-    setTimeout(() => {
+    activeTimeouts.push(setTimeout(() => {
         showSoundCaption(getRandomSound());
-    }, 5200);
+    }, TIMING.THIRD_SOUND));
     
-    setTimeout(() => {
+    activeTimeouts.push(setTimeout(() => {
         showSoundCaption('CRASH!!!');
         showCrashEffect();
-    }, 5800);
+    }, TIMING.FINAL_CRASH));
     
     // End of sequence
-    setTimeout(() => {
+    activeTimeouts.push(setTimeout(() => {
         isAnimating = false;
         startBtn.disabled = false;
-    }, 7000);
+        activeTimeouts = [];
+    }, TIMING.SEQUENCE_END));
 }
 
 // Function to reset animation
 function resetAnimation() {
+    // Clear all active timeouts
+    activeTimeouts.forEach(timeoutId => clearTimeout(timeoutId));
+    activeTimeouts = [];
+    
     // Remove all animation classes
     carCarrier.classList.remove('crash-left', 'shake');
     tankTruck.classList.remove('crash-right', 'shake');

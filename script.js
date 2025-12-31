@@ -95,6 +95,27 @@ function createSmoke(x, y) {
     }
 }
 
+// Function to create explosion effect
+function createExplosion(x, y) {
+    const debrisContainer = document.getElementById('debris-container');
+    const explosionSymbols = ['💥', '🔥', '💥', '🔥', '⚡', '✨', '💫', '🌟'];
+    
+    // Create large central explosion
+    for (let i = 0; i < 12; i++) {
+        const explosion = document.createElement('div');
+        explosion.className = 'explosion-particle';
+        explosion.textContent = explosionSymbols[Math.floor(Math.random() * explosionSymbols.length)];
+        explosion.style.left = x + '%';
+        explosion.style.top = y + '%';
+        explosion.style.setProperty('--angle', (i * 30) + 'deg');
+        explosion.style.setProperty('--distance', (80 + Math.random() * 120) + 'px');
+        explosion.style.fontSize = (2 + Math.random() * 2) + 'em';
+        debrisContainer.appendChild(explosion);
+        
+        setTimeout(() => explosion.remove(), 1500);
+    }
+}
+
 // Function to damage vehicle
 function damageVehicle(vehicle, severity = 'medium') {
     vehicle.classList.add('damaged');
@@ -129,9 +150,12 @@ function startCrashSequence() {
     activeTimeouts.push(setTimeout(() => {
         carCarrier.classList.add('crash-left');
         tankTruck.classList.add('crash-right');
+        // Start train and sports car at same time
+        train.classList.add('train-crash-left');
+        sportCar.classList.add('sportcar-crash-right');
     }, TIMING.START_MOVEMENT));
     
-    // First crash sound
+    // First crash sound - trucks collide
     activeTimeouts.push(setTimeout(() => {
         showSoundCaption(getRandomSound());
         showCrashEffect();
@@ -145,46 +169,29 @@ function startCrashSequence() {
         createSmoke(47, 25);
     }, TIMING.FIRST_CRASH));
     
-    // Phase 2: Sport car joins the crash
+    // Train and sports car collision - WITH EXPLOSION
     activeTimeouts.push(setTimeout(() => {
-        showSoundCaption('SCREECH!');
-    }, TIMING.SPORT_CAR_SCREECH));
-    
-    // Second crash sound
-    activeTimeouts.push(setTimeout(() => {
-        showSoundCaption(getRandomSound());
+        showSoundCaption('MEGA EXPLOSION!');
         showCrashEffect();
-        carCarrier.classList.add('shake');
-        tankTruck.classList.add('shake');
+        sportCar.classList.add('shake', 'train-impact', 'exploding');
+        train.classList.add('shake', 'exploding');
         
-        // Additional damage to trucks
-        createDebris(47, 25);
-        createSmoke(47, 25);
-    }, TIMING.SECOND_CRASH));
-    
-    // Phase 3: Train and sport car crash into each other
-    activeTimeouts.push(setTimeout(() => {
-        showSoundCaption('CHOO CHOO!');
-        // Start train and sport car moving toward each other
-        train.classList.add('train-crash-left');
-        sportCar.classList.add('sportcar-crash-right');
-    }, TIMING.TRAIN_HORN));
-    
-    // Train and sport car collision
-    activeTimeouts.push(setTimeout(() => {
-        showSoundCaption('MEGA ' + getRandomSound());
-        showCrashEffect();
-        sportCar.classList.add('shake', 'train-impact');
-        train.classList.add('shake');
+        // Create massive explosion effect
+        createExplosion(45, 62);
         
         // Severe damage to both
         damageVehicle(sportCar, 'severe');
         damageVehicle(train, 'heavy');
         sportCar.classList.add('flattened', 'demolished');
-        createDebris(55, 50);
-        createDebris(50, 45);
-        createSmoke(55, 45);
-    }, TIMING.TRAIN_CRASH));
+        
+        // Massive debris from explosion
+        createDebris(45, 62);
+        createDebris(48, 62);
+        createDebris(42, 62);
+        createSmoke(45, 62);
+        createSmoke(48, 60);
+        createSmoke(42, 64);
+    }, TIMING.SPORT_CAR_SCREECH));
     
     // Final impact sounds
     activeTimeouts.push(setTimeout(() => {
@@ -220,8 +227,8 @@ function resetAnimation() {
     // Remove all animation classes
     carCarrier.classList.remove('crash-left', 'shake', 'damaged', 'squished', 'tilted', 'broken', 'heavily-damaged', 'severely-damaged');
     tankTruck.classList.remove('crash-right', 'shake', 'damaged', 'squished', 'tilted', 'broken', 'heavily-damaged', 'severely-damaged');
-    sportCar.classList.remove('crash-down', 'sportcar-crash-right', 'shake', 'damaged', 'squished', 'crushed', 'flattened', 'train-impact', 'demolished', 'heavily-damaged', 'severely-damaged');
-    train.classList.remove('train-incoming', 'train-crash-left', 'shake', 'damaged', 'heavily-damaged', 'severely-damaged');
+    sportCar.classList.remove('crash-down', 'sportcar-crash-right', 'shake', 'damaged', 'squished', 'crushed', 'flattened', 'train-impact', 'demolished', 'heavily-damaged', 'severely-damaged', 'exploding');
+    train.classList.remove('train-incoming', 'train-crash-left', 'shake', 'damaged', 'heavily-damaged', 'severely-damaged', 'exploding');
     soundCaption.classList.remove('show');
     crashEffect.classList.remove('show');
     

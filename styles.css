@@ -552,6 +552,57 @@ h1 {
     }
 }
 
+/* Explosion Particles */
+.explosion-particle {
+    position: absolute;
+    animation: explosionBlast 1.5s ease-out forwards;
+}
+
+@keyframes explosionBlast {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(0.5);
+    }
+    50% {
+        opacity: 1;
+        transform: translate(
+            calc(cos(var(--angle)) * var(--distance) * 0.5),
+            calc(sin(var(--angle)) * var(--distance) * 0.5)
+        ) scale(1.5);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(
+            calc(cos(var(--angle)) * var(--distance)),
+            calc(sin(var(--angle)) * var(--distance))
+        ) scale(0.3);
+    }
+}
+
+/* Exploding Vehicle Effect */
+.vehicle.exploding {
+    animation: explosionShake 0.3s ease-in-out infinite, explosionGlow 1s ease-out;
+    filter: brightness(2) saturate(2) contrast(1.5);
+}
+
+@keyframes explosionShake {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(-8px, -5px) rotate(-8deg); }
+    50% { transform: translate(8px, 5px) rotate(8deg); }
+    75% { transform: translate(-5px, 8px) rotate(-5deg); }
+}
+
+@keyframes explosionGlow {
+    0% {
+        filter: brightness(3) saturate(3) contrast(2);
+        box-shadow: 0 0 50px rgba(255, 100, 0, 1);
+    }
+    100% {
+        filter: brightness(0.3) saturate(0.2) contrast(1.5);
+        box-shadow: 0 0 0 rgba(255, 100, 0, 0);
+    }
+}
+
 /* Smoke Container */
 .smoke-container {
     position: absolute;

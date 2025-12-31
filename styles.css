@@ -178,9 +178,9 @@ h1 {
 
 /* Train */
 .train {
-    bottom: 250px !important;
+    bottom: auto !important;
+    top: 250px !important;
     right: 10% !important;
-    top: auto !important;
     left: auto !important;
 }
 
@@ -383,12 +383,13 @@ h1 {
 @keyframes trainMoveLeft {
     to {
         right: 45%;
+        top: 250px;
     }
 }
 
 @keyframes sportcarMoveRight {
     to {
-        left: 35%;
+        left: 42%;
         top: 250px;
     }
 }

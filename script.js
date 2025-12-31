@@ -150,30 +150,21 @@ function startCrashSequence() {
         showSoundCaption('SCREECH!');
     }, TIMING.SPORT_CAR_SCREECH));
     
-    activeTimeouts.push(setTimeout(() => {
-        sportCar.classList.add('crash-down');
-    }, TIMING.SPORT_CAR_MOVEMENT));
-    
     // Second crash sound
     activeTimeouts.push(setTimeout(() => {
         showSoundCaption(getRandomSound());
         showCrashEffect();
-        sportCar.classList.add('shake');
         carCarrier.classList.add('shake');
         tankTruck.classList.add('shake');
         
-        // Damage sport car and create more effects
-        damageVehicle(sportCar, 'medium');
-        sportCar.classList.add('crushed');
-        createDebris(47, 40);
-        createSmoke(47, 40);
+        // Additional damage to trucks
+        createDebris(47, 25);
+        createSmoke(47, 25);
     }, TIMING.SECOND_CRASH));
     
     // Phase 3: Train and sport car crash into each other
     activeTimeouts.push(setTimeout(() => {
         showSoundCaption('CHOO CHOO!');
-        // Remove previous sport car animation
-        sportCar.classList.remove('crash-down', 'crushed');
         // Start train and sport car moving toward each other
         train.classList.add('train-crash-left');
         sportCar.classList.add('sportcar-crash-right');

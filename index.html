@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Truck Crash Spectacular - Car Crash Simulator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Truck Crash Spectacular</h1>
+        <p class="subtitle">Watch the trucks crash on the dirt track!</p>
+        
+        <div class="track-container">
+            <!-- Sound Effect Caption -->
+            <div id="sound-caption" class="sound-caption" aria-live="polite" aria-atomic="true"></div>
+            
+            <!-- Dirt Track -->
+            <div class="dirt-track">
+                <!-- Vehicles -->
+                <div id="car-carrier" class="vehicle car-carrier" role="img" aria-label="Car Carrier Truck">
+                    <div class="vehicle-label">Car Carrier</div>
+                    🚛
+                </div>
+                
+                <div id="tank-truck" class="vehicle tank-truck" role="img" aria-label="Tank Truck">
+                    <div class="vehicle-label">Tank Truck</div>
+                    🚚
+                </div>
+                
+                <div id="sport-car" class="vehicle sport-car" role="img" aria-label="Sport Car">
+                    <div class="vehicle-label">Sport Car</div>
+                    🏎️
+                </div>
+                
+                <!-- Crash Effects -->
+                <div id="crash-effect" class="crash-effect"></div>
+            </div>
+        </div>
+        
+        <button id="start-btn" class="start-button">Start Crash Sequence</button>
+        <button id="reset-btn" class="reset-button">Reset</button>
+        
+        <div class="info">
+            <h3>Features:</h3>
+            <ul>
+                <li>✅ Car Carrier Truck</li>
+                <li>✅ Tank Truck</li>
+                <li>✅ Sport Car</li>
+                <li>✅ Dirt Track Setting</li>
+                <li>✅ Sound Effect Captions (for when sound is off)</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

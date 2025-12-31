@@ -54,6 +54,56 @@ function showCrashEffect() {
     }, 1000);
 }
 
+// Function to create debris particles
+function createDebris(x, y) {
+    const debrisContainer = document.getElementById('debris-container');
+    const debrisSymbols = ['🔩', '⚙️', '🔧', '💨', '✨', '⭐', '💫', '🌟'];
+    
+    for (let i = 0; i < 8; i++) {
+        const debris = document.createElement('div');
+        debris.className = 'debris';
+        debris.textContent = debrisSymbols[Math.floor(Math.random() * debrisSymbols.length)];
+        debris.style.left = x + '%';
+        debris.style.top = y + '%';
+        debris.style.setProperty('--angle', Math.random() * 360 + 'deg');
+        debris.style.setProperty('--distance', (50 + Math.random() * 100) + 'px');
+        debrisContainer.appendChild(debris);
+        
+        setTimeout(() => debris.remove(), 2000);
+    }
+}
+
+// Function to create smoke effect
+function createSmoke(x, y) {
+    const smokeContainer = document.getElementById('smoke-container');
+    
+    for (let i = 0; i < 5; i++) {
+        setTimeout(() => {
+            const smoke = document.createElement('div');
+            smoke.className = 'smoke';
+            smoke.textContent = '💨';
+            smoke.style.left = (x + (Math.random() - 0.5) * 10) + '%';
+            smoke.style.top = y + '%';
+            smokeContainer.appendChild(smoke);
+            
+            setTimeout(() => smoke.remove(), 2000);
+        }, i * 200);
+    }
+}
+
+// Function to damage vehicle
+function damageVehicle(vehicle) {
+    const icon = vehicle.querySelector('.vehicle-icon');
+    const damaged = vehicle.querySelector('.vehicle-damaged');
+    
+    if (icon && damaged) {
+        icon.style.display = 'none';
+        damaged.style.display = 'inline';
+    }
+    
+    vehicle.classList.add('damaged', 'squished');
+}
+
 // Function to get random sound effect
 function getRandomSound() {
     return soundEffects[Math.floor(Math.random() * soundEffects.length)];
@@ -82,6 +132,12 @@ function startCrashSequence() {
         showCrashEffect();
         carCarrier.classList.add('shake');
         tankTruck.classList.add('shake');
+        
+        // Damage vehicles and create effects
+        damageVehicle(carCarrier);
+        damageVehicle(tankTruck);
+        createDebris(47, 25);
+        createSmoke(47, 25);
     }, TIMING.FIRST_CRASH));
     
     // Phase 2: Sport car joins the crash
@@ -100,6 +156,12 @@ function startCrashSequence() {
         sportCar.classList.add('shake');
         carCarrier.classList.add('shake');
         tankTruck.classList.add('shake');
+        
+        // Damage sport car and create more effects
+        damageVehicle(sportCar);
+        sportCar.classList.add('crushed');
+        createDebris(47, 40);
+        createSmoke(47, 40);
     }, TIMING.SECOND_CRASH));
     
     // Final impact sounds
@@ -110,6 +172,13 @@ function startCrashSequence() {
     activeTimeouts.push(setTimeout(() => {
         showSoundCaption('CRASH!!!');
         showCrashEffect();
+        
+        // Final impact - extra damage
+        carCarrier.classList.add('tilted', 'broken');
+        tankTruck.classList.add('tilted', 'broken');
+        sportCar.classList.add('flattened');
+        createDebris(47, 35);
+        createSmoke(50, 30);
     }, TIMING.FINAL_CRASH));
     
     // End of sequence
@@ -127,11 +196,25 @@ function resetAnimation() {
     activeTimeouts = [];
     
     // Remove all animation classes
-    carCarrier.classList.remove('crash-left', 'shake');
-    tankTruck.classList.remove('crash-right', 'shake');
-    sportCar.classList.remove('crash-down', 'shake');
+    carCarrier.classList.remove('crash-left', 'shake', 'damaged', 'squished', 'tilted', 'broken');
+    tankTruck.classList.remove('crash-right', 'shake', 'damaged', 'squished', 'tilted', 'broken');
+    sportCar.classList.remove('crash-down', 'shake', 'damaged', 'squished', 'crushed', 'flattened');
     soundCaption.classList.remove('show');
     crashEffect.classList.remove('show');
+    
+    // Reset vehicle icons
+    [carCarrier, tankTruck, sportCar].forEach(vehicle => {
+        const icon = vehicle.querySelector('.vehicle-icon');
+        const damaged = vehicle.querySelector('.vehicle-damaged');
+        if (icon && damaged) {
+            icon.style.display = 'inline';
+            damaged.style.display = 'none';
+        }
+    });
+    
+    // Clear debris and smoke
+    document.getElementById('debris-container').innerHTML = '';
+    document.getElementById('smoke-container').innerHTML = '';
     
     // Clear caption text
     soundCaption.textContent = '';

@@ -169,30 +169,30 @@ function startCrashSequence() {
         createSmoke(47, 40);
     }, TIMING.SECOND_CRASH));
     
-    // Train warning
+    // Phase 3: Train and sport car crash into each other
     activeTimeouts.push(setTimeout(() => {
         showSoundCaption('CHOO CHOO!');
+        // Remove previous sport car animation
+        sportCar.classList.remove('crash-down', 'crushed');
+        // Start train and sport car moving toward each other
+        train.classList.add('train-crash-left');
+        sportCar.classList.add('sportcar-crash-right');
     }, TIMING.TRAIN_HORN));
     
-    // Train enters
-    activeTimeouts.push(setTimeout(() => {
-        train.classList.add('train-incoming');
-    }, TIMING.TRAIN_MOVEMENT));
-    
-    // Sport car crashes into train
+    // Train and sport car collision
     activeTimeouts.push(setTimeout(() => {
         showSoundCaption('MEGA ' + getRandomSound());
         showCrashEffect();
         sportCar.classList.add('shake', 'train-impact');
         train.classList.add('shake');
         
-        // Severe damage to sport car
+        // Severe damage to both
         damageVehicle(sportCar, 'severe');
-        damageVehicle(train, 'medium');
+        damageVehicle(train, 'heavy');
         sportCar.classList.add('flattened', 'demolished');
-        createDebris(70, 50);
-        createDebris(65, 45);
-        createSmoke(70, 45);
+        createDebris(55, 50);
+        createDebris(50, 45);
+        createSmoke(55, 45);
     }, TIMING.TRAIN_CRASH));
     
     // Final impact sounds
@@ -229,8 +229,8 @@ function resetAnimation() {
     // Remove all animation classes
     carCarrier.classList.remove('crash-left', 'shake', 'damaged', 'squished', 'tilted', 'broken', 'heavily-damaged', 'severely-damaged');
     tankTruck.classList.remove('crash-right', 'shake', 'damaged', 'squished', 'tilted', 'broken', 'heavily-damaged', 'severely-damaged');
-    sportCar.classList.remove('crash-down', 'shake', 'damaged', 'squished', 'crushed', 'flattened', 'train-impact', 'demolished', 'heavily-damaged', 'severely-damaged');
-    train.classList.remove('train-incoming', 'shake', 'damaged', 'heavily-damaged', 'severely-damaged');
+    sportCar.classList.remove('crash-down', 'sportcar-crash-right', 'shake', 'damaged', 'squished', 'crushed', 'flattened', 'train-impact', 'demolished', 'heavily-damaged', 'severely-damaged');
+    train.classList.remove('train-incoming', 'train-crash-left', 'shake', 'damaged', 'heavily-damaged', 'severely-damaged');
     soundCaption.classList.remove('show');
     crashEffect.classList.remove('show');
     

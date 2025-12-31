@@ -178,8 +178,8 @@ h1 {
 
 /* Train */
 .train {
-    bottom: 50px !important;
-    right: 15% !important;
+    bottom: 250px !important;
+    right: 10% !important;
     top: auto !important;
     left: auto !important;
 }
@@ -368,6 +368,28 @@ h1 {
 @keyframes moveUp {
     to {
         top: 150px;
+    }
+}
+
+/* Train-Sport Car Crash Animations */
+.vehicle.train-crash-left {
+    animation: trainMoveLeft 2s ease-in forwards;
+}
+
+.vehicle.sportcar-crash-right {
+    animation: sportcarMoveRight 2s ease-in forwards;
+}
+
+@keyframes trainMoveLeft {
+    to {
+        right: 45%;
+    }
+}
+
+@keyframes sportcarMoveRight {
+    to {
+        left: 35%;
+        top: 250px;
     }
 }
 

@@ -178,9 +178,10 @@ h1 {
 
 /* Train */
 .train {
-    bottom: 200px !important;
-    right: -200px !important;
+    bottom: 50px !important;
+    right: 15% !important;
     top: auto !important;
+    left: auto !important;
 }
 
 .train-visual {
@@ -477,15 +478,13 @@ h1 {
 
 /* Train Animation */
 .train.train-incoming {
-    animation: trainEnter 1.5s ease-in forwards;
+    /* Train stays in place - no movement */
 }
 
 @keyframes trainEnter {
-    0% {
-        right: -200px;
-    }
-    100% {
-        right: 25%;
+    0%, 100% {
+        right: 15%;
+        bottom: 50px;
     }
 }
 
